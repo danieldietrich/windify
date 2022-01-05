@@ -1,0 +1,47 @@
+{
+  "name": "windify",
+  "version": "0.0.0",
+  "description": "Toolless TailwindCSS and Windi CSS, directly in the browser.",
+  "keywords": [
+    "windify",
+    "windicss",
+    "windi",
+    "tailwindcss",
+    "css",
+    "browser",
+    "esm",
+    "module"
+  ],
+  "files": ["dist"],
+  "main": "./dist/windify.umd.js",
+  "module": "./dist/windify.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/windify.es.js",
+      "require": "./dist/windify.umd.js"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "dev:gitpod": "APP_ENV=gitpod vite",
+    "build:lib": "vite build --config ./vite-dist.config.js",
+    "build:docs": "vite build",
+    "prepare": "npm run build:lib"
+  },
+  "devDependencies": {
+    "vite": "^2.7.10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danieldietrich/windify.git"
+  },
+  "homepage": "https://windify.tw",
+  "bugs": "https://github.com/danieldietrich/windify/issues",
+  "author": {
+    "name": "Daniel Dietrich",
+    "email": "cafebab3@gmail.com",
+    "url": "https://danieldietrich.dev"
+  },
+  "funding": "https://github.com/sponsors/danieldietrich",
+  "license": "MIT"
+}
