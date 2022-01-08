@@ -20,7 +20,7 @@
           focus:outline-none focus:ring-2 ring-purple-600 ring-opacity-40;
       }
     </style>
-    <script type="module" crossorigin src="/assets/index.944d9f9a.js"></script>
+    <script type="module" crossorigin src="/assets/index.906ac452.js"></script>
   </head>
   <body class="bg-gray-100 dark:bg-gray-900">
     <h1 onclick='document.body.innerHTML = `
@@ -43,8 +43,28 @@
         </div>
       `
     '>
-      Windify 🌬
+      <p>Windify 🌬</p>
+      <hello-world/>
     </h1>
     
+    <template id="hello-world" type="compify" mode="open" attributes="{a: bool, b:, c:}">
+      <style lang="windi">
+        .hello {
+          @apply py-8 px-8 inline-flex mx-auto bg-white dark:bg-gray-400 dark:bg-opacity-10 rounded-xl shadow-md space-y-2;
+        }
+      </style>
+      <h1 class="hello">Hello World</h1>
+    </template>
+    <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+      <style lang="windi">
+        circle {
+          fill: gold;
+          stroke: maroon;
+          stroke-width: 2px;
+          @apply py-8 px-8;
+        }
+      </style>
+      <circle cx="5" cy="5" r="4" />
+    </svg>
   </body>
 </html>
