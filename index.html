@@ -23,7 +23,7 @@
         @apply bg-orange-300;
       }
     </style>
-    <script type="module" crossorigin src="/assets/index.336d62d4.js"></script>
+    <script type="module" crossorigin src="/assets/index.aa7fb655.js"></script>
   </head>
   <body class="bg-gray-100 dark:bg-gray-900">
     <h1 onclick='document.body.innerHTML = `
@@ -57,7 +57,7 @@
 
     <!-- mode?: 'open' | 'closed', default: undefined -->
     <web-component id="hello-world">
-      <template link name="default" b class style>
+      <template link name b=true class style>
         <script lang="webify">
           // using 'this' instead of 'function' prevents us from accidentally taking a function from the global scope.
           // both lambda and function possible here.
@@ -70,7 +70,7 @@
         </script>
         <script lang="webify">
           this.attributeChangedCallback = function(name, oldValue, newValue) {
-            console.log("the attributeChangedCallback", this);
+            console.log("the attributeChangedCallback", name, oldValue, newValue, this);
           }
           this.adoptedCallback = function() {
             console.log("the adoptedCallback", this);
