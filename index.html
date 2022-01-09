@@ -23,7 +23,7 @@
         @apply bg-orange-300;
       }
     </style>
-    <script type="module" crossorigin src="/assets/index.b1662f8f.js"></script>
+    <script type="module" crossorigin src="/assets/index.3e2105b0.js"></script>
   </head>
   <body class="bg-gray-100 dark:bg-gray-900">
     <h1 onclick='document.body.innerHTML = `
@@ -56,13 +56,21 @@
     
 
     <!-- mode?: 'open' | 'closed', default: undefined -->
-    <web-component id="hello-world">
-      <template link name b=true class style>
+    <web-component name="hello-world">
+      <template>
         <script lang="webify">
+          this.defaultProps = {
+            class: null,
+            style: null,
+            name: null,
+            link: null,
+            b: true
+          }
           // using 'this' instead of 'function' prevents us from accidentally taking a function from the global scope.
           // both lambda and function possible here.
           this.connectedCallback = function () {
             console.log("the connectedCallback", this.parentNode);
+            this.querySelectorAll("*").forEach(e => console.log("element", e));
           }
           this.disconnectedCallback = () => {
             console.log("the disconnectedCallback", this.parentNode);
