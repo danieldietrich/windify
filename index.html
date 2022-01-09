@@ -23,7 +23,7 @@
         @apply bg-orange-300;
       }
     </style>
-    <script type="module" crossorigin src="/assets/index.9d664352.js"></script>
+    <script type="module" crossorigin src="/assets/index.f280cc5f.js"></script>
   </head>
   <body class="bg-gray-100 dark:bg-gray-900">
     <h1 onclick='document.body.innerHTML = `
@@ -58,20 +58,20 @@
       <template link name="default" b class style>
         <script lang="webify">
           function connectedCallback() {
-            console.log("the connectedCallback");
+            console.log("the connectedCallback", this);
           }
-          function disconnectedCallback() {
-            console.log("the disconnectedCallback");
-          }
-        </script>
-        <script lang="webify">
-          function attributeChangedCallback(name, oldValue, newValue) {
-            console.log("the attributeChangedCallback");
-          }
-          function adoptedCallback() {
-            console.log("the adoptedCallback");
+          this.__proto__.disconnectedCallback = () => {
+            console.log("the disconnectedCallback", this);
           }
         </script>
+        <!--script lang="webify">
+          this.attributeChangedCallback = function(name, oldValue, newValue) {
+            console.log("the attributeChangedCallback", this);
+          }
+          this.adoptedCallback = function() {
+            console.log("the adoptedCallback", this);
+          }
+        </script-->
         <style lang="windi">
           .hello {
             @apply py-8 px-8 inline-flex mx-auto bg-white dark:bg-gray-400 dark:bg-opacity-10 rounded-xl shadow-md space-y-2;
