@@ -23,7 +23,7 @@
         @apply bg-orange-300;
       }
     </style>
-    <script type="module" crossorigin src="/assets/index.545b68d9.js"></script>
+    <script type="module" crossorigin src="/assets/index.275fe2e1.js"></script>
   </head>
   <body class="bg-gray-100 dark:bg-gray-900">
     <h1 onclick='document.body.innerHTML = `
@@ -47,62 +47,15 @@
       `
     '>
       <p>Windify 🌬</p>
-      <hello-world class="daniel" style="background-color: red">
+      <hello-world style="background-color: red">
         <span slot="ddd">Daniel!</span>
       </hello-world>
     </h1>
-    <div id="one"></div>
-    <div id="two"></div>
-    
-
-    <!-- mode?: 'open' | 'closed', default: undefined -->
-    <web-component name="hello-world">
+    <web-component name="hello-world" mode="open">
       <template>
-        <script lang="webify">
-          this.defaultProps = {
-            class: null,
-            style: null,
-            name: null,
-            link: null,
-            b: true
-          }
-          // using 'this' instead of 'function' prevents us from accidentally taking a function from the global scope.
-          // both lambda and function possible here.
-          this.connectedCallback = function () {
-            console.log("the connectedCallback", this.parentNode);
-            this.querySelectorAll("*").forEach(e => console.log("element", e));
-          }
-          this.disconnectedCallback = () => {
-            console.log("the disconnectedCallback", this.parentNode);
-          }
-        </script>
-        <script lang="webify">
-          this.attributeChangedCallback = function(name, oldValue, newValue) {
-            console.log("the attributeChangedCallback", name, oldValue, newValue, this);
-          }
-          this.adoptedCallback = function() {
-            console.log("the adoptedCallback", this);
-          }
-        </script>
-        <style lang="windi">
-          .hello {
-            @apply py-8 px-8 inline-flex mx-auto bg-white dark:bg-gray-400 dark:bg-opacity-10 rounded-xl shadow-md space-y-2;
-          }
-        </style>
-        <h1 class="hello bello">Hello <span></span><a href=""></a></h1>
+        <h1>Hello <slot name="ddd"></slot></h1>
       </template>
     </web-component>
-
-    <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
-      <style lang="windi">
-        circle {
-          fill: gold;
-          stroke: maroon;
-          stroke-width: 2px;
-          @apply py-8 px-8;
-        }
-      </style>
-      <circle cx="5" cy="5" r="4" />
-    </svg>
+    
   </body>
 </html>
