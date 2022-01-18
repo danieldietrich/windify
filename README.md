@@ -4,8 +4,6 @@
 &nbsp;
 [![Follow](https://img.shields.io/twitter/follow/danieldietrich?label=Follow&style=social)](https://twitter.com/danieldietrich/)
 
-![Windify](./public/windify.svg)
-
 <p>
   <a href="https://windify.tw/#gh-light-mode-only" target="_blank">
     <img src="./public/windify-light.svg" alt="Tailwind CSS" width="350" height="70">
