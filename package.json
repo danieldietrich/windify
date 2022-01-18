@@ -1,6 +1,6 @@
 {
   "name": "windify",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Toolless TailwindCSS and Windi CSS, directly in the browser.",
   "keywords": [
     "windify",
