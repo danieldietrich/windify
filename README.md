@@ -22,10 +22,10 @@ Toolless [TailwindCSS](https://tailwindcss.com) and [Windi CSS](https://windicss
 * Processes all inline styles and transforms directives like `@apply`
 * Prevents FOUC (flash of unstyled content)
 * Tracks document changes by running in watch mode by default
-* Parses TailwindCSS directives and replaces then with the corresponding CSS
+* Parses TailwindCSS directives and replaces them with the corresponding CSS
 * Scans the document for TailwindCSS classes and adds them to the document
 
-Note: Windify internally uses [Windi CSS](https://windicss.org) to generate the CSS. In the following we use _TailwindCSS_ as synonym for all tools that support [TailwindCSS](https://tailwindcss.com) syntax.
+Note: Windify internally uses [Windi CSS](https://windicss.org) to generate the CSS. In the following we use _TailwindCSS_ as a synonym for all tools that support [TailwindCSS](https://tailwindcss.com) syntax.
 
 ## Usage
 
