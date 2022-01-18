@@ -4,7 +4,7 @@
  * Aynchronous initialization of the runtime DOM.
  * 
  * @param {Options} options
- * @return {Promise<void>}
+ * @return {Promise<Process>}
  * 
  * @typedef {{
  *   minify?: boolean          // minify the output (default: true)
@@ -15,6 +15,8 @@
  *   windiCssVersion?: string, // Windi CSS version (default: latest)
  *   config?: any              // optional windicss config
  * }} Options
+ * 
+ * @typedef {(...nodes: Node[]) => Promise<void>} Process
  */
 export default async (options) => {
 
@@ -35,7 +37,7 @@ export default async (options) => {
      */
     const { default: Processor } = await import(/* @vite-ignore */ `https://esm.run/windicss@${windiCssVersion}`);
     const processor = new Processor(config);
-    const styleSheet = processor.interpret().styleSheet; // workaround for new StyleSheet();
+    const styleSheet = processor.interpret().styleSheet; // workaround for new StyleSheet()
     const styleElement = document.head.appendChild(document.createElement('style'));
 
     /**
@@ -43,14 +45,14 @@ export default async (options) => {
      */
     const classes = new Set(), queuedClasses = new Set();
     const tags = new Set(), queuedTags = new Set();
-    const process = (node) => {
+    const process = (node, recurse = true) => {
         if (node.nodeType === Node.ELEMENT_NODE) {
-            const descendants = node.querySelectorAll('*');
+            const descendants = recurse ? node.querySelectorAll('*') : [];
             [node, ...descendants].forEach(childNode => {
                 if (childNode.nodeType === Node.ELEMENT_NODE) {
-                    childNode.classList.length > 0 && childNode.classList.forEach(className =>
-                        !classes.has(className) && queuedClasses.add(className)
-                    );
+                    childNode.classList.length > 0 && childNode.classList.forEach(className => {
+                        !classes.has(className) && queuedClasses.add(className);
+                    });
                     if (preflight) {
                         const nodeName = childNode.nodeName.toLowerCase();
                         !tags.has(nodeName) && queuedTags.add(nodeName);
@@ -58,15 +60,15 @@ export default async (options) => {
                 }
             });
         }
-    }
+    };
 
     /**
      * A scheduler that requests an animation frame (fallback: setTimeout) to update styles.
      */
     const scheduleUpdate = (() => {
-        const request = window.requestAnimationFrame || ((callback) => setTimeout(callback, 16.66));
+        const request = window.requestAnimationFrame || (callback => setTimeout(callback, 16.66));
         let id = 0;
-        return () => (id == 0) && (id = request(() => { update(); id = 0; }));
+        return () => !!(queuedClasses.size + queuedTags.size) && (id == 0) && (id = request(() => { update(); id = 0 }));
     })();
 
     /**
@@ -98,13 +100,13 @@ export default async (options) => {
         // parse all directives like @apply
         if (parseCss) {
             const { CSSParser } = await import(/* @vite-ignore */ `https://esm.run/windicss@${windiCssVersion}/utils/parser`);
-            [document, ...Array.from(document.querySelectorAll("template")).map(t => t.content)].forEach(node =>
+            [document, ...Array.from(document.querySelectorAll("template")).map(t => t.content)].forEach(node => {
                 node.querySelectorAll("style[lang='windify']").forEach(style => {
                     const cssParser = new CSSParser(style.textContent, processor);
                     style.innerHTML = cssParser.parse().build();
                     style.removeAttribute('lang');
-                })
-            );
+                });
+            });
         }
         // collect all classes and tags
         process(root);
@@ -113,24 +115,24 @@ export default async (options) => {
         // remove hidden attribute from html, body and root elements
         [document.documentElement, document.body, root].forEach(node => {
             if (node.hidden) {
-                node.removeAttribute('hidden')
+                node.removeAttribute('hidden');
             }
         });
         // install mutation observer
         if (watch) {
-            new MutationObserver((mutations) => {
-                mutations.forEach(({ type, target, addedNodes }) => {
-                    type === 'attributes' && process(target);
+            new MutationObserver(mutations => {
+                mutations.forEach(({ type, target, attributeName, addedNodes }) => {
+                    type === 'attributes' && attributeName === 'class' && process(target, false);
                     type === 'childList' && addedNodes.forEach(node => process(node));
                 });
-                !!(queuedClasses.size + queuedTags.size) && scheduleUpdate();
+                scheduleUpdate();
             }).observe(root, {
                 childList: true,
                 subtree: true,
                 attributeFilter: ['class'] // implicitely sets attributes to true
             });
         }
-    }
+    };
 
     /**
      * Entry point
@@ -140,5 +142,12 @@ export default async (options) => {
         return;
     }
     await init();
+    return async (...nodes) => {
+        nodes.forEach(node => process(node));
+        // We knowingly don't await the update of the styles. Subsequent calls to process()
+        // will not trigger an update if the styles are already up to date or if the styles
+        // are still being processed.
+        scheduleUpdate();
+    };
 
-}
+};
