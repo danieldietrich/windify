@@ -1,8 +1,4 @@
-[![npm version](https://img.shields.io/npm/v/windify?logo=npm&style=flat-square)](https://www.npmjs.com/package/windify/)[![minzipped size](https://img.shields.io/bundlephobia/minzip/windify?style=flat-square)](https://bundlephobia.com/result?p=windify@latest)
-&nbsp;
-[![Sponsor](https://img.shields.io/badge/GitHub-💖Sponsors-b5b7b9?logo=github&style=flat-square)](https://github.com/sponsors/danieldietrich)[![license](https://img.shields.io/github/license/danieldietrich/copy?style=flat-square)](https://opensource.org/licenses/MIT/)
-&nbsp;
-[![Follow](https://img.shields.io/twitter/follow/danieldietrich?label=Follow&style=social)](https://twitter.com/danieldietrich/)
+[![npm version](https://img.shields.io/npm/v/windify?logo=npm&style=flat-square)](https://www.npmjs.com/package/windify/)[![brotlied](https://img.badgesize.io/https://cdn.jsdelivr.net/npm/windify.svg?compression=brotli&label=brotlied&max=1500&softmax=1000&style=flat-square)](https://www.jsdelivr.com/package/npm/windify)[![hits/month](https://data.jsdelivr.com/v1/package/npm/windify/badge)](https://www.jsdelivr.com/package/npm/windify)[![license](https://img.shields.io/github/license/danieldietrich/copy?style=flat-square)](https://opensource.org/licenses/MIT/)[![sponsor](https://img.shields.io/badge/GitHub-💖Sponsors-b5b7b9?logo=github&style=flat-square)](https://github.com/sponsors/danieldietrich)[![follow](https://img.shields.io/twitter/follow/danieldietrich?logo=twitter&style=flat-square)](https://twitter.com/danieldietrich/)
 
 <p>
   <a href="https://windify.tw/#gh-light-mode-only" target="_blank">
