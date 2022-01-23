@@ -4,19 +4,19 @@
  * Aynchronous initialization of the runtime DOM.
  * 
  * @param {Options} options
- * @return {Promise<Process>}
+ * @return {Promise<ElementProcessor>}
  * 
  * @typedef {{
  *   minify?: boolean          // minify the output (default: true)
  *   parseCss: boolean         // parse CSS (default: true)
  *   preflight?: boolean       // enables CSS reset for descendants of the root element (default: true)
- *   root?: HTMLElement        // the DOM element that will be scanned for windi classes (default: document.body)
+ *   root?: Element            // the DOM element that will be scanned for windi classes (default: document.body)
  *   watch?: boolean           // enable/disable watch mode, only applies to the root element (default: true)
  *   windiCssVersion?: string, // Windi CSS version (default: latest)
  *   config?: any              // optional windicss config
  * }} Options
  * 
- * @typedef {(...nodes: Node[]) => Promise<void>} Process
+ * @typedef {(...elements: Element[]) => Promise<void>} ElementProcessor
  */
 export default async (options) => {
 
@@ -35,31 +35,31 @@ export default async (options) => {
     /**
      * Initialization of Windi CSS Processor and style element containing generated styles.
      */
-    const { default: Processor } = await import(/* @vite-ignore */ `https://esm.run/windicss@${windiCssVersion}`);
+    const [{ default: Processor }, { CSSParser }] = await Promise.all([
+        import(/* @vite-ignore */ `https://esm.run/windicss@${windiCssVersion}`),
+        import(/* @vite-ignore */ `https://esm.run/windicss@${windiCssVersion}/utils/parser`)
+    ]);
     const processor = new Processor(config);
     const styleSheet = processor.interpret().styleSheet; // workaround for new StyleSheet()
     const styleElement = document.head.appendChild(document.createElement('style'));
-
-    /**
-     * Processing nodes and storing css classes and tag names for updating the generated styles.
-     */
     const classes = new Set(), queuedClasses = new Set();
     const tags = new Set(), queuedTags = new Set();
-    const process = (node, recurse = true) => {
-        if (node.nodeType === Node.ELEMENT_NODE) {
-            const descendants = recurse ? node.querySelectorAll('*') : [];
-            [node, ...descendants].forEach(childNode => {
-                if (childNode.nodeType === Node.ELEMENT_NODE) {
-                    childNode.classList.length > 0 && childNode.classList.forEach(className => {
-                        !classes.has(className) && queuedClasses.add(className);
-                    });
-                    if (preflight) {
-                        const nodeName = childNode.nodeName.toLowerCase();
-                        !tags.has(nodeName) && queuedTags.add(nodeName);
-                    }
-                }
+
+    /**
+     * Processing elements and storing css classes and tag names for updating the generated styles.
+     * @type {(element: Element, recurse?: boolean) => void}
+     */
+    const process = (element, recurse = true) => {
+        const descendants = recurse ? element.querySelectorAll('*') : [];
+        [element, ...descendants].forEach(elem => {
+            elem.classList.length > 0 && elem.classList.forEach(className => {
+                !classes.has(className) && queuedClasses.add(className);
             });
-        }
+            if (preflight) {
+                const tagName = elem.tagName.toLowerCase();
+                !tags.has(tagName) && queuedTags.add(tagName);
+            }
+        });
     };
 
     /**
@@ -94,36 +94,47 @@ export default async (options) => {
     };
 
     /**
+     * Parses the CSS of all style elements and transforms directives.
+     * 
+     * @param {Element} element
+     */
+    const parseStyles = (element) => {
+        // querySelectorAll does not include template element contents
+        // because they are not visible in the DOM
+        element.querySelectorAll("style[lang='windify']").forEach(style => {
+            const cssParser = new CSSParser(style.textContent, processor);
+            style.innerHTML = cssParser.parse().build();
+            style.removeAttribute('lang');
+        });
+    };
+
+    /**
      * Initially parse Windi CSS directives, compute the styles and install a mutation overserver.
      */
     const init = async () => {
         // parse all directives like @apply
         if (parseCss) {
-            const { CSSParser } = await import(/* @vite-ignore */ `https://esm.run/windicss@${windiCssVersion}/utils/parser`);
-            [document, ...Array.from(document.querySelectorAll("template")).map(t => t.content)].forEach(node => {
-                node.querySelectorAll("style[lang='windify']").forEach(style => {
-                    const cssParser = new CSSParser(style.textContent, processor);
-                    style.innerHTML = cssParser.parse().build();
-                    style.removeAttribute('lang');
-                });
-            });
+            parseStyles(document.documentElement);
         }
         // collect all classes and tags
         process(root);
         // update styles immediately in order to have correct styling when showing the root element
         update();
         // remove hidden attribute from html, body and root elements
-        [document.documentElement, document.body, root].forEach(node => {
-            if (node.hidden) {
-                node.removeAttribute('hidden');
+        [document.documentElement, document.body, root].forEach(elem => {
+            if (elem.hidden) {
+                elem.removeAttribute('hidden');
             }
         });
         // install mutation observer
         if (watch) {
+            // note: a mutation observer does not recognize changes to template content!
             new MutationObserver(mutations => {
                 mutations.forEach(({ type, target, attributeName, addedNodes }) => {
+                    // @ts-ignore (target is always an Element)
                     type === 'attributes' && attributeName === 'class' && process(target, false);
-                    type === 'childList' && addedNodes.forEach(node => process(node));
+                    // @ts-ignore (node is always an Element)
+                    type === 'childList' && addedNodes.forEach(node => node.nodeType === Node.ELEMENT_NODE && process(node));
                 });
                 scheduleUpdate();
             }).observe(root, {
@@ -142,8 +153,11 @@ export default async (options) => {
         return;
     }
     await init();
-    return async (...nodes) => {
-        nodes.forEach(node => process(node));
+    return async (...elements) => {
+        elements.forEach(elem => {
+            parseCss && parseStyles(elem);
+            process(elem);
+        });
         // We knowingly don't await the update of the styles. Subsequent calls to process()
         // will not trigger an update if the styles are already up to date or if the styles
         // are still being processed.
