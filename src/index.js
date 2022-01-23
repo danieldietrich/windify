@@ -76,14 +76,14 @@ export default async (options) => {
      */
     const update = () => {
         if (queuedClasses.size) {
-            const classString = Array.from(queuedClasses).join(' ');
+            const classString = [...queuedClasses].join(' ');
             const classStyleSheet = processor.interpret(classString).styleSheet;
             styleSheet.extend(classStyleSheet);
             queuedClasses.forEach(c => classes.add(c));
             queuedClasses.clear();
         }
         if (preflight && queuedTags.size) {
-            const html = Array.from(queuedTags).map(t => `<${t}`).join(' ');
+            const html = [...queuedTags].map(t => `<${t}`).join(' ');
             const preflightStyleSheet = processor.preflight(html);
             styleSheet.extend(preflightStyleSheet);
             queuedTags.forEach(t => tags.add(t));
