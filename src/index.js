@@ -16,7 +16,7 @@
  *   config?: any              // optional windicss config
  * }} Options
  * 
- * @typedef {(...elements: Element[]) => Promise<void>} ElementProcessor
+ * @typedef {(element: Element | DocumentFragment) => Promise<void>} ElementProcessor
  */
 export default async (options) => {
 
@@ -47,7 +47,7 @@ export default async (options) => {
 
     /**
      * Processing elements and storing css classes and tag names for updating the generated styles.
-     * @type {(element: Element, recurse?: boolean) => void}
+     * @type {(element: Element | DocumentFragment, recurse?: boolean) => void}
      */
     const process = (element, recurse = true) => {
         const descendants = recurse ? element.querySelectorAll('*') : [];
@@ -96,7 +96,7 @@ export default async (options) => {
     /**
      * Parses the CSS of all style elements and transforms directives.
      * 
-     * @param {Element} element
+     * @param {Element | DocumentFragment} element
      */
     const parseStyles = (element) => {
         // querySelectorAll does not include template element contents
