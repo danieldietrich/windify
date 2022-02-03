@@ -111,7 +111,7 @@ export default async (options) => {
     /**
      * Initially parse Windi CSS directives, compute the styles and install a mutation overserver.
      */
-    const init = async () => {
+    const init = () => {
         // parse all directives like @apply
         if (parseCss) {
             parseStyles(document.documentElement);
@@ -152,7 +152,7 @@ export default async (options) => {
         console.warn('Windify cannot be used outside of a browser.');
         return;
     }
-    await init();
+    init();
     return async (...elements) => {
         elements.forEach(elem => {
             parseCss && parseStyles(elem);
