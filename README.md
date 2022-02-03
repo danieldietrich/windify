@@ -9,19 +9,19 @@
   </a>
 </p>
 
-Toolless [TailwindCSS](https://tailwindcss.com) and [Windi CSS](https://windicss.org), directly in the browser.
+Toolless [Tailwind CSS](https://tailwindcss.com) and [Windi CSS](https://windicss.org), directly in the browser.
 
 ## Features
 
-* **Use TailwindCSS and Windi CSS directly in the browser, no build tools needed!**
+* **Use Tailwind CSS and Windi CSS directly in the browser, no build tools needed!**
 * No need to learn anything about NodeJS, just edit and run index.html
 * Processes all inline styles and transforms directives like `@apply`
 * Prevents FOUC (flash of unstyled content)
 * Tracks document changes by running in watch mode by default
-* Parses TailwindCSS directives and replaces them with the corresponding CSS
-* Scans the document for TailwindCSS classes and adds them to the document
+* Parses Tailwind CSS directives and replaces them with the corresponding CSS
+* Scans the document for Tailwind CSS classes and adds them to the document
 
-Note: Windify internally uses [Windi CSS](https://windicss.org) to generate the CSS. In the following we use _TailwindCSS_ as a synonym for all tools that support [TailwindCSS](https://tailwindcss.com) syntax.
+Note: Windify internally uses [Windi CSS](https://windicss.org) to generate the CSS. In the following we use _Tailwind CSS_ as a synonym for all tools that support [Tailwind CSS](https://tailwindcss.com) syntax.
 
 ## Usage
 
@@ -41,7 +41,7 @@ Note: Windify internally uses [Windi CSS](https://windicss.org) to generate the 
 </script>
 ```
 
-2. Start to use TailwindCSS / Windi CSS syntax in your HTML
+2. Start to use Tailwind CSS / Windi CSS syntax in your HTML
 
 ```html
 <h1 class="bg-gray-100 hello">Hello!</h1>
